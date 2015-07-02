@@ -6,8 +6,8 @@
 </description>
     <link>http://likwueron.github.io/</link>
     <atom:link href="http://likwueron.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 02 Jul 2015 23:38:38 +0800</pubDate>
-    <lastBuildDate>Thu, 02 Jul 2015 23:38:38 +0800</lastBuildDate>
+    <pubDate>Thu, 02 Jul 2015 23:46:25 +0800</pubDate>
+    <lastBuildDate>Thu, 02 Jul 2015 23:46:25 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -18,16 +18,16 @@
 
 &lt;p&gt;雖然東西改了不少，不過真正重要的也只有一個：&lt;br /&gt;
 不再有XXXIterator，因為可以用table和lua的for實裝。
-腳本環境要這麼寫：
-&amp;lt;% highlight lua %&amp;gt;
-– type省略的話就是所有GameObject
-– type定義在 qt.meta.Qamer ，可以查閱 qamer_global.hpp 了解詳情
-objectTable = qt.meta.GameObject.objectTable(type) 
-for k,v in pairs(objectTable) do
-    print(v);
-end
-&amp;lt;% endhighlight %&amp;gt;
-另外有個叫qt.meta.GameObject.objectNumber()也是差不多用法，不過它是取物件數量的。&lt;/p&gt;
+腳本環境要這麼寫：&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-lua&quot; data-lang=&quot;lua&quot;&gt;&lt;span class=&quot;c1&quot;&gt;-- type省略的話就是所有GameObject&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;-- type定義在 qt.meta.Qamer ，可以查閱 qamer_global.hpp 了解詳情&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;objectTable&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;qt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;meta&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GameObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;objectTable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
+&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;v&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;pairs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;objectTable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;另外有個叫qt.meta.GameObject.objectNumber()也是差不多用法，不過它是取物件數量的。&lt;/p&gt;
 
 &lt;p&gt;之後QtLua可能也會再調整一次，因為我自己改的地方其實會造成程式當掉。
 而且物件改名的機制似乎會造成些誤會，所以也要調。

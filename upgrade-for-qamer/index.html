@@ -154,16 +154,16 @@
 
 <p>雖然東西改了不少，不過真正重要的也只有一個：<br />
 不再有XXXIterator，因為可以用table和lua的for實裝。
-腳本環境要這麼寫：
-&lt;% highlight lua %&gt;
-– type省略的話就是所有GameObject
-– type定義在 qt.meta.Qamer ，可以查閱 qamer_global.hpp 了解詳情
-objectTable = qt.meta.GameObject.objectTable(type) 
-for k,v in pairs(objectTable) do
-    print(v);
-end
-&lt;% endhighlight %&gt;
-另外有個叫qt.meta.GameObject.objectNumber()也是差不多用法，不過它是取物件數量的。</p>
+腳本環境要這麼寫：</p>
+
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="c1">-- type省略的話就是所有GameObject</span>
+<span class="c1">-- type定義在 qt.meta.Qamer ，可以查閱 qamer_global.hpp 了解詳情</span>
+<span class="n">objectTable</span> <span class="o">=</span> <span class="n">qt</span><span class="p">.</span><span class="n">meta</span><span class="p">.</span><span class="n">GameObject</span><span class="p">.</span><span class="n">objectTable</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span> 
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="k">in</span> <span class="nb">pairs</span><span class="p">(</span><span class="n">objectTable</span><span class="p">)</span> <span class="k">do</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">);</span>
+<span class="k">end</span></code></pre></div>
+
+<p>另外有個叫qt.meta.GameObject.objectNumber()也是差不多用法，不過它是取物件數量的。</p>
 
 <p>之後QtLua可能也會再調整一次，因為我自己改的地方其實會造成程式當掉。
 而且物件改名的機制似乎會造成些誤會，所以也要調。
