@@ -6,9 +6,65 @@
 </description>
     <link>http://likwueron.github.io/</link>
     <atom:link href="http://likwueron.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 01 Jul 2015 16:30:03 +0800</pubDate>
-    <lastBuildDate>Wed, 01 Jul 2015 16:30:03 +0800</lastBuildDate>
+    <pubDate>Thu, 02 Jul 2015 23:38:38 +0800</pubDate>
+    <lastBuildDate>Thu, 02 Jul 2015 23:38:38 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>工作日誌：QtLua實裝</title>
+        <description>&lt;h1 id=&quot;section&quot;&gt;改版本身&lt;/h1&gt;
+
+&lt;p&gt;把Jekyll搞定後，就重新開始處理改版。&lt;/p&gt;
+
+&lt;p&gt;雖然東西改了不少，不過真正重要的也只有一個：&lt;br /&gt;
+不再有XXXIterator，因為可以用table和lua的for實裝。
+腳本環境要這麼寫：
+&amp;lt;% highlight lua %&amp;gt;
+– type省略的話就是所有GameObject
+– type定義在 qt.meta.Qamer ，可以查閱 qamer_global.hpp 了解詳情
+objectTable = qt.meta.GameObject.objectTable(type) 
+for k,v in pairs(objectTable) do
+    print(v);
+end
+&amp;lt;% endhighlight %&amp;gt;
+另外有個叫qt.meta.GameObject.objectNumber()也是差不多用法，不過它是取物件數量的。&lt;/p&gt;
+
+&lt;p&gt;之後QtLua可能也會再調整一次，因為我自己改的地方其實會造成程式當掉。
+而且物件改名的機制似乎會造成些誤會，所以也要調。
+不過之後就不會特別理它了，因為大部份我要的功能都實做出來了。&lt;/p&gt;
+
+&lt;p&gt;這次不會給下載，因為我想要真正寫出新的功能之後再釋出。
+嘛，想要&lt;a href=&quot;https://bitbucket.org/likwueron/qamer&quot;&gt;源始碼&lt;/a&gt;的還是可以。
+說到這個，找哪一天把Qamer也丟上Github好了。&lt;/p&gt;
+
+&lt;h1 id=&quot;blog&quot;&gt;關於這個Blog&lt;/h1&gt;
+
+&lt;p&gt;我搞定後才發現有&lt;a href=&quot;http://jekyllbootstrap.com/&quot;&gt;jekyll-bootstrap&lt;/a&gt;，臉可真腫啊。
+不過算了，反正我搞定了。反而是你有興趣在Github上弄個Blog假裝很潮倒是可以來用用看。&lt;/p&gt;
+
+&lt;p&gt;而目前，我對自己寫的東西還算滿意，大概再加些東西就可以了。
+也許那時候會考慮釋出，就叫Li’s極簡風好了，反正四週都是白茫茫的。&lt;/p&gt;
+</description>
+        <pubDate>Thu, 02 Jul 2015 00:00:00 +0800</pubDate>
+        <link>http://likwueron.github.io/upgrade-for-qamer/</link>
+        <guid isPermaLink="true">http://likwueron.github.io/upgrade-for-qamer/</guid>
+        
+        <category>Qt</category>
+        
+        <category>Qamer</category>
+        
+        <category>QtLua</category>
+        
+        <category>script</category>
+        
+        <category>lua</category>
+        
+        <category>working_log</category>
+        
+        <category>jekyll</category>
+        
+        
+      </item>
     
       <item>
         <title>切換遊戲畫面</title>
