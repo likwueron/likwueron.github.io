@@ -5,11 +5,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>工作日誌：QtLua實裝</title>
-  <meta name="description" content="改版本身">
+  <title>工作日誌：我們有的只是空空的畫面</title>
+  <meta name="description" content="雖然上次我表示可以弄些畫面(Screen)了，不過仔細想想，我們能做些什麼？什．麼．都．沒．有！">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://likwueron.github.io/upgrade-for-qamer/">
+  <link rel="canonical" href="http://likwueron.github.io/work-all-we-have-is-just-empty-screen/">
   <link rel="alternate" type="application/rss+xml" title="Likwueron的小屋" href="http://likwueron.github.io/feed.xml" />
 </head>
 
@@ -158,67 +158,64 @@
         </div>
         <div class="post">
   <header class="post-header">
-    <h1 class="post-title">工作日誌：QtLua實裝</h1>
-    <p class="post-meta">Jul 2, 2015 • By Li, Kwue-Ron</p>
+    <h1 class="post-title">工作日誌：我們有的只是空空的畫面</h1>
+    <p class="post-meta">Jul 8, 2015 • By Li, Kwue-Ron</p>
     
     <p class="post-meta">標籤：
       
-        <a href="/tag/qt">1. Qt</a>，
+        <a href="/tag/qtlua">1. QtLua</a>，
         
       
-        <a href="/tag/qamer">2. Qamer</a>，
+        <a href="/tag/lua">2. lua</a>，
         
       
-        <a href="/tag/qtlua">3. QtLua</a>，
+        <a href="/tag/qt">3. Qt</a>，
         
       
-        <a href="/tag/script">4. script</a>，
-        
-      
-        <a href="/tag/lua">5. lua</a>，
-        
-      
-        <a href="/tag/working_log">6. working_log</a>，
-        
-      
-        <a href="/tag/jekyll">7. jekyll</a>
+        <a href="/tag/working_log">4. working_log</a>
       
     </p>
     
   </header>
   <article class="post-content">
-    <h1 id="section">改版本身</h1>
+    <p>雖然上次我表示可以弄些畫面(Screen)了，不過仔細想想，我們能做些什麼？
+什．麼．都．沒．有！</p>
 
-<p>把Jekyll搞定後，就重新開始處理改版。</p>
+<p>接下來討論這些不同面象的畫面要怎麼做，現有的程式又缺了些什麼。</p>
 
-<p>雖然東西改了不少，不過真正重要的也只有一個：<br />
-不再有XXXIterator，因為可以用table和lua的for實裝。
-腳本環境要這麼寫：</p>
+<h1 id="section">畫廊</h1>
+<p>很多RPG都有什麼回憶啦，怪物紀錄之類的東西。
+大致上來說，它們和遊戲的運作沒什麼關係，只是單純的讀取資料。</p>
 
-<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="c1">-- type省略的話就是所有GameObject</span>
-<span class="c1">-- type定義在 qt.meta.Qamer ，可以查閱 qamer_global.hpp 了解詳情</span>
-<span class="n">objectTable</span> <span class="o">=</span> <span class="n">qt</span><span class="p">.</span><span class="n">meta</span><span class="p">.</span><span class="n">GameObject</span><span class="p">.</span><span class="n">objectTable</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span> 
-<span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="k">in</span> <span class="nb">pairs</span><span class="p">(</span><span class="n">objectTable</span><span class="p">)</span> <span class="k">do</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">);</span>
-<span class="k">end</span></code></pre></div>
+<p>想像一下你有一份文件，其中放了一堆1和0好用來表示哪些東西要顯示，哪些不用。
+Lua中有一個IO模組，我們是可以用它處理這件事，或是你覺得給它讀寫二進位檔的能力很可怕，也可以自己寫TextReader和TextWriter。
+反正讀寫本身沒有太多問題。</p>
 
-<p>另外有個叫qt.meta.GameObject.objectNumber()也是差不多用法，不過它是取物件數量的。</p>
+<p>接下來我要找相關的圖片並顯示，在Qt中，最簡單的是使用QLabel。
+但接下來你很悲痛的發現QLabel的setPixmap吃的是QPixmap，你還得先建立該物件…
+再來你又發現QPixmap少了一大堆你要的方法，對，很多Qt物件並沒有把成員函式設為slots。</p>
 
-<p>之後QtLua可能也會再調整一次，因為我自己改的地方其實會造成程式當掉。
-而且物件改名的機制似乎會造成些誤會，所以也要調。
-不過之後就不會特別理它了，因為大部份我要的功能都實做出來了。</p>
+<p>不管怎麼看，這方面都是要再造一個物件補上去。
+而如果你還有別的需求，肯定是要碰C++的，那聽起來真令人不舒服。</p>
 
-<p>這次不會給下載，因為我想要真正寫出新的功能之後再釋出。
-嘛，想要<a href="https://bitbucket.org/likwueron/qamer">源始碼</a>的還是可以。
-說到這個，找哪一天把Qamer也丟上Github好了。</p>
+<h1 id="section-1">設定</h1>
+<p>像設定這一類的是包含讀和寫，而且它不一定是讀檔，比如你在遊戲中更改的話就是對記憶體讀寫。</p>
 
-<h1 id="blog">關於這個Blog</h1>
+<p>我有想過用動態屬性轉向。
+Qt中有一個叫QDynamicPropertyChangeEvent的事件，很明顯的會在動態屬性變化時發送。
+所以我們可以接到它之後轉給特定函式處理。
+不過如果我要增加新的設定選項呢？唉，還是不行，又要回頭加東西。</p>
 
-<p>我搞定後才發現有<a href="http://jekyllbootstrap.com/">jekyll-bootstrap</a>，臉可真腫啊。
-不過算了，反正我搞定了。反而是你有興趣在Github上弄個Blog假裝很潮倒是可以來用用看。</p>
+<p>RPG Maker是怎麼讓它有那麼大的彈性的？也許這和它很多東西都用RGSS做延伸。
+可惜我看到那一堆程式碼就覺得研究起來很麻煩，不然現在應該是在做它了。
+嘛，不管怎樣，最好的方法還是盡可能的把東西釋出到腳本環境，然後用腳本做延伸。</p>
 
-<p>而目前，我對自己寫的東西還算滿意，大概再加些東西就可以了。
-也許那時候會考慮釋出，就叫Li’s極簡風好了，反正四週都是白茫茫的。</p>
+<p>目前對這點想得到應該是覆載函式這點。
+要覆載的話，目前也只有動態屬性可以動。
+想想看，我們把一個Lua函式指給動態屬性，而在paintEvent中判斷：如果有這個屬性，就執行它。
+而要達成這一步就非得要讓QMetaType認識QtLua::Value，這樣我們才能使用QVariant包裝它。</p>
+
+<p>而剩下的，可能就要拿個RPG Maker的作品來研究一下。</p>
 
   </article>
 </div>
@@ -231,7 +228,7 @@
 </p>
     
     <center>
-      <a href="https://twitter.com/intent/tweet?url=http://likwueron.github.io/upgrade-for-qamer/&text=工作日誌：QtLua實裝&via=likwueron">
+      <a href="https://twitter.com/intent/tweet?url=http://likwueron.github.io/work-all-we-have-is-just-empty-screen/&text=工作日誌：我們有的只是空空的畫面&via=likwueron">
         <span class="icon  icon--twitter">
           <svg viewBox="0 0 16 16">
             <path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809
@@ -240,7 +237,7 @@
         </span>
         <span>推文</span>
       </a>|
-      <a href="https://plus.google.com/share?url=http://likwueron.github.io/upgrade-for-qamer/">
+      <a href="https://plus.google.com/share?url=http://likwueron.github.io/work-all-we-have-is-just-empty-screen/">
         <span>Google+一個</span>
       </a>|
       <a href="/feed.xml">訂閱</a>
