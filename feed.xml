@@ -6,9 +6,64 @@
 </description>
     <link>http://likwueron.github.io/</link>
     <atom:link href="http://likwueron.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 08 Jul 2015 16:51:51 +0800</pubDate>
-    <lastBuildDate>Wed, 08 Jul 2015 16:51:51 +0800</lastBuildDate>
+    <pubDate>Mon, 20 Jul 2015 14:48:34 +0800</pubDate>
+    <lastBuildDate>Mon, 20 Jul 2015 14:48:34 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>工作日誌：除蟲大賽</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;問題修正&lt;/h2&gt;
+
+&lt;p&gt;今天總算是找到蟲在哪邊了，其實我之前就有寫註解，但那時就是不了解問題在哪。&lt;/p&gt;
+
+&lt;p&gt;要怎麼說，就是有點丟臉啊…因為眼花沒注意自己打成另一個變數，結果某一個指標重複被釋放。&lt;br /&gt;
+至於為什麼這會變成機率性當掉，我想可能是delete運算子有「防呆」設計。&lt;br /&gt;
+在防呆運作正常的時候它能防止重複釋放的問題，但顯然因為我寫的太複雜了，它有時無法理解那兩次delete都是同一個指標，所以會當掉。&lt;/p&gt;
+
+&lt;p&gt;前一次釋出時太急了沒有注意測試到一些東西，比如說lua5.1.dll沒包進去，以及畫面切換後切不回去都在這次修正了。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;新增功能&lt;/h2&gt;
+
+&lt;p&gt;然後這次主要在腳本中增加Label這個「類別」，基本上就是在QLabel外面套一層，好讓你可以設定圖片。&lt;br /&gt;
+雖然我也在網路上看有人是用函式處理這問題，不過我覺得用類似物件導向的語法會感覺比較良好。&lt;/p&gt;
+
+&lt;p&gt;加入了resolvePostorder(ParaList, GameObject)&lt;br /&gt;
+在之前我一直是用getDamage來取傷害的，只是我越來越覺得這不夠彈性，最後就加入這東西了。不過具體而言，它是一個使用上比較「神秘」的函式。&lt;br /&gt;
+ParaList就是QList&lt;parameter&gt;，而Parameter則是我自己寫的一個字元陣列\(不是C-style字串\)。C++端的實作暫且不論，在腳本這邊它會以數字表格(table)的形式存在。&lt;br /&gt;
+會這麼做的原因還是在於Parameter第一個元素是存儲「目前長度」，並允許各元素使用0作為值。如果我用字串的形式丟到腳本環境，回到C++端可能就無法還原了。&lt;br /&gt;
+Parameter亦能作為有限長度的整數陣列，這算是很大的利用C語言低階的特性。&lt;/parameter&gt;&lt;/p&gt;
+
+&lt;p&gt;話說回來，當初會加這個也算是一種奇怪的堅持就是了。&lt;br /&gt;
+最初我很希望用後序來存儲傷害運算式，所以你在data/script/skill.cfg.qs寫的那些setParameter(Qamer.ParaDamage, “stregth+5”);會被轉成stregth 5 +
+&amp;lt;% highlight lua %&amp;gt;
+– 這個技能是近戰的「劍擊」
+skill = qt.meta.GameObject.new(1);
+para = skill:parameter(qt.meta.Qamer.ParaDamage);
+for k,v in ipairs(para) do list(v); end
+&amp;lt;% endhighlight %&amp;gt;
+&lt;a href=&quot;http://i.imgur.com/EtD8B9k.png&quot;&gt;Imgur&lt;/a&gt;
+結果如圖&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://mega.nz/#!F9YHUZRI!DIkeT4f2BLvOAwrHxFXV6FIzqPwFM4s8YcJOS_CwBkk&quot;&gt;下載&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Mon, 20 Jul 2015 00:00:00 +0800</pubDate>
+        <link>http://likwueron.github.io/release-debuging-task/</link>
+        <guid isPermaLink="true">http://likwueron.github.io/release-debuging-task/</guid>
+        
+        <category>Qamer</category>
+        
+        <category>QtLua</category>
+        
+        <category>lua</category>
+        
+        <category>memory_allocation</category>
+        
+        <category>debug</category>
+        
+        <category>working_release</category>
+        
+        
+      </item>
     
       <item>
         <title>工作日誌：我們有的只是空空的畫面</title>
