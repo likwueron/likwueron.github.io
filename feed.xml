@@ -6,8 +6,8 @@
 </description>
     <link>http://likwueron.github.io/</link>
     <atom:link href="http://likwueron.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 20 Jul 2015 14:48:34 +0800</pubDate>
-    <lastBuildDate>Mon, 20 Jul 2015 14:48:34 +0800</lastBuildDate>
+    <pubDate>Mon, 20 Jul 2015 14:56:11 +0800</pubDate>
+    <lastBuildDate>Mon, 20 Jul 2015 14:56:11 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -29,20 +29,20 @@
 
 &lt;p&gt;加入了resolvePostorder(ParaList, GameObject)&lt;br /&gt;
 在之前我一直是用getDamage來取傷害的，只是我越來越覺得這不夠彈性，最後就加入這東西了。不過具體而言，它是一個使用上比較「神秘」的函式。&lt;br /&gt;
-ParaList就是QList&lt;parameter&gt;，而Parameter則是我自己寫的一個字元陣列\(不是C-style字串\)。C++端的實作暫且不論，在腳本這邊它會以數字表格(table)的形式存在。&lt;br /&gt;
+ParaList就是QList&lt;parameter&gt;，而Parameter則是我自己寫的一個字元陣列。C++端的實作暫且不論，在腳本這邊它會以數字表格(table)的形式存在。&lt;br /&gt;
 會這麼做的原因還是在於Parameter第一個元素是存儲「目前長度」，並允許各元素使用0作為值。如果我用字串的形式丟到腳本環境，回到C++端可能就無法還原了。&lt;br /&gt;
 Parameter亦能作為有限長度的整數陣列，這算是很大的利用C語言低階的特性。&lt;/parameter&gt;&lt;/p&gt;
 
 &lt;p&gt;話說回來，當初會加這個也算是一種奇怪的堅持就是了。&lt;br /&gt;
-最初我很希望用後序來存儲傷害運算式，所以你在data/script/skill.cfg.qs寫的那些setParameter(Qamer.ParaDamage, “stregth+5”);會被轉成stregth 5 +
-&amp;lt;% highlight lua %&amp;gt;
-– 這個技能是近戰的「劍擊」
-skill = qt.meta.GameObject.new(1);
-para = skill:parameter(qt.meta.Qamer.ParaDamage);
-for k,v in ipairs(para) do list(v); end
-&amp;lt;% endhighlight %&amp;gt;
-&lt;a href=&quot;http://i.imgur.com/EtD8B9k.png&quot;&gt;Imgur&lt;/a&gt;
-結果如圖&lt;/p&gt;
+最初我很希望用後序來存儲傷害運算式，所以你在data/script/skill.cfg.qs寫的那些setParameter(Qamer.ParaDamage, “stregth+5”);會被轉成stregth 5 +&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-lua&quot; data-lang=&quot;lua&quot;&gt;&lt;span class=&quot;c1&quot;&gt;-- 這個技能是近戰的「劍擊」&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;skill&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;qt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;meta&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GameObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;para&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;skill&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;parameter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;qt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;meta&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Qamer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ParaDamage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;v&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;ipairs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;para&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/EtD8B9k.png&quot; alt=&quot;Imgur&quot; /&gt;
+&lt;br /&gt;第一個是stregth，用了7個字元。第二個是數字5，-4代表內容是整數陣列，佔用4-byte。最後是+，用了1個字元。&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://mega.nz/#!F9YHUZRI!DIkeT4f2BLvOAwrHxFXV6FIzqPwFM4s8YcJOS_CwBkk&quot;&gt;下載&lt;/a&gt;&lt;/p&gt;
 </description>

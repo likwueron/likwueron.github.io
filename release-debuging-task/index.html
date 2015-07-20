@@ -212,20 +212,20 @@
 
 <p>加入了resolvePostorder(ParaList, GameObject)<br />
 在之前我一直是用getDamage來取傷害的，只是我越來越覺得這不夠彈性，最後就加入這東西了。不過具體而言，它是一個使用上比較「神秘」的函式。<br />
-ParaList就是QList<parameter>，而Parameter則是我自己寫的一個字元陣列\(不是C-style字串\)。C++端的實作暫且不論，在腳本這邊它會以數字表格(table)的形式存在。<br />
+ParaList就是QList<parameter>，而Parameter則是我自己寫的一個字元陣列。C++端的實作暫且不論，在腳本這邊它會以數字表格(table)的形式存在。<br />
 會這麼做的原因還是在於Parameter第一個元素是存儲「目前長度」，並允許各元素使用0作為值。如果我用字串的形式丟到腳本環境，回到C++端可能就無法還原了。<br />
 Parameter亦能作為有限長度的整數陣列，這算是很大的利用C語言低階的特性。</parameter></p>
 
 <p>話說回來，當初會加這個也算是一種奇怪的堅持就是了。<br />
-最初我很希望用後序來存儲傷害運算式，所以你在data/script/skill.cfg.qs寫的那些setParameter(Qamer.ParaDamage, “stregth+5”);會被轉成stregth 5 +
-&lt;% highlight lua %&gt;
-– 這個技能是近戰的「劍擊」
-skill = qt.meta.GameObject.new(1);
-para = skill:parameter(qt.meta.Qamer.ParaDamage);
-for k,v in ipairs(para) do list(v); end
-&lt;% endhighlight %&gt;
-<a href="http://i.imgur.com/EtD8B9k.png">Imgur</a>
-結果如圖</p>
+最初我很希望用後序來存儲傷害運算式，所以你在data/script/skill.cfg.qs寫的那些setParameter(Qamer.ParaDamage, “stregth+5”);會被轉成stregth 5 +</p>
+
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="c1">-- 這個技能是近戰的「劍擊」</span>
+<span class="n">skill</span> <span class="o">=</span> <span class="n">qt</span><span class="p">.</span><span class="n">meta</span><span class="p">.</span><span class="n">GameObject</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">para</span> <span class="o">=</span> <span class="n">skill</span><span class="p">:</span><span class="n">parameter</span><span class="p">(</span><span class="n">qt</span><span class="p">.</span><span class="n">meta</span><span class="p">.</span><span class="n">Qamer</span><span class="p">.</span><span class="n">ParaDamage</span><span class="p">);</span>
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="k">in</span> <span class="nb">ipairs</span><span class="p">(</span><span class="n">para</span><span class="p">)</span> <span class="k">do</span> <span class="n">list</span><span class="p">(</span><span class="n">v</span><span class="p">);</span> <span class="k">end</span></code></pre></div>
+
+<p><img src="http://i.imgur.com/EtD8B9k.png" alt="Imgur" />
+<br />第一個是stregth，用了7個字元。第二個是數字5，-4代表內容是整數陣列，佔用4-byte。最後是+，用了1個字元。</p>
 
 <p><a href="https://mega.nz/#!F9YHUZRI!DIkeT4f2BLvOAwrHxFXV6FIzqPwFM4s8YcJOS_CwBkk">下載</a></p>
 
