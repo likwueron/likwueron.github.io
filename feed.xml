@@ -6,9 +6,128 @@
 </description>
     <link>http://likwueron.github.io/</link>
     <atom:link href="http://likwueron.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 20 Jul 2015 14:56:11 +0800</pubDate>
-    <lastBuildDate>Mon, 20 Jul 2015 14:56:11 +0800</lastBuildDate>
+    <pubDate>Sun, 06 Sep 2015 17:38:04 +0800</pubDate>
+    <lastBuildDate>Sun, 06 Sep 2015 17:38:04 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>Linux文字介面下設定網卡</title>
+        <description>&lt;p&gt;最近也是要考慮生活的問題了，畢竟這邊是不動漫世界，我也不能一直看動漫(炸)。&lt;br /&gt;
+我打算考個紅帽認證，感覺錢途比較好。&lt;/p&gt;
+
+&lt;p&gt;老實說我覺得去補習班…很不值，因為請來的老師我不覺得很優秀。&lt;br /&gt;
+我覺得網管應該是以文字介面的工具為主才對，GUI只是作為設定驗證之類的。&lt;br /&gt;
+雖然往好的方面想，我以前摸Linux的時間沒有白費…&lt;/p&gt;
+
+&lt;p&gt;該怎麼說，其實班上根本就是巨大落差，大概是「雲端」這個詞聽起來很潮就跑過來了。&lt;br /&gt;
+嘛，我的想法和以前一樣，「雲端多數只是行銷名詞」，基本上和多東西和以前一樣。&lt;br /&gt;
+當然，對於最前線的來說倒是很多東西都不太一樣了。&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;問題&lt;/h2&gt;
+&lt;p&gt;網路設定在現在的發行版中幾乎都是自動抓取了，除非你是使用ADSL，它要走PPPOE。&lt;br /&gt;
+不過現在虛擬化也有不少應用，加上教學時用VM也比較方便，所以在虛擬網上的處理就是這次的主題了。&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;使用的軟體VirtualBox，雖然業界可能只信任VMWare，只是我用VB比較久了…&lt;br /&gt;
+使用兩張介面卡：NAT network和Host-Only。
+兩邊都關閉DHCP。&lt;br /&gt;
+至於為什麼要用NAT network而不是預設的NAT是因為它可以讓多個虛擬機在同一子網路，方便NAT轉送。&lt;/p&gt;
+
+&lt;p&gt;OS使用Dabian系下的Kubuntu 14.04和RedHat系下Fedora 22實作。&lt;br /&gt;
+基本上來說，台灣的Linux以RedHat為主，用Fedora操作的確是比較順手…&lt;br /&gt;
+不過這不代表說Ubuntu就不能用指令，只是很多RedHat採用的東西，比如firewalld, systemd和nmcli並沒有預裝或是完整支援。&lt;/p&gt;
+
+&lt;h2 id=&quot;fedora&quot;&gt;Fedora&lt;/h2&gt;
+&lt;p&gt;一開始介面卡都很好的抓到了，老實說真的很順手。&lt;br /&gt;
+如果要說哪邊有問題的話，應該是ip位址設定上要注意，設錯了要砍掉，不然會出現多個值。&lt;/p&gt;
+
+&lt;h3 id=&quot;nat&quot;&gt;設定NAT&lt;/h3&gt;
+&lt;p&gt;NAT網路開頭似乎是enp&lt;/p&gt;
+
+&lt;p&gt;VirtualBox的nat比較詭異的是，你指定的gateway只要是在同一子網路它都可以連得通。&lt;br /&gt;
+比如我一台設10.0.2.1，另一台設10.0.2.2，也就是同一網路上有兩個gateway也行。&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;sudo nmcli connection edit &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;介面卡]
+&lt;span class=&quot;c&quot;&gt;#應該會提示你method要不要改成manual&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;nmcli&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&amp;gt;set ipv4.address 10.0.2.2/24
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;nmcli&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&amp;gt;set ipv4.gatway 10.0.2.1
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;nmcli&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&amp;gt;set ipv4.dns 168.95.1.1 8.8.8.8
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;nmcli&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&amp;gt;save
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;nmcli&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&amp;gt;quit&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;host-only&quot;&gt;設定 Host-Only&lt;/h3&gt;
+&lt;p&gt;VirtualBox會在安裝後給你主端一張host-only的網卡，指定ip時紀得不要衝到了。&lt;br /&gt;
+這邊比較容易出現ID是中文的情形，所以設定時要改用uuid&lt;br /&gt;
+另外就是不要設gateway，不然會和NAT搶預設路由。&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;sudo nmcli connection edit uuid &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;UUID]
+&lt;span class=&quot;c&quot;&gt;#把妨礙設定的中文改掉&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;nmcli&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&amp;gt;set connection.id &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;名稱]
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;nmcli&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&amp;gt;set ipv4.address 192.168.56.2
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;nmcli&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&amp;gt;save
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;nmcli&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&amp;gt;quit&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;其它&lt;/h3&gt;
+&lt;p&gt;因為是一次設定兩張，嫌麻煩的話可以把整個network服務重開&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;sudo systemctl restart network&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;當然，你也可以一張一張的處理&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;sudo ifdown &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;介面卡id]
+sudo ifup &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;介面卡id]&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;kubuntu&quot;&gt;Kubuntu&lt;/h2&gt;
+&lt;p&gt;GUI預設的那支小工具…會罷工，所以把裡面的東西都砍掉，免得衝突。&lt;br /&gt;
+重開機後MAC和介面卡的對映以及名稱可都會跑掉，所以要再確認。&lt;/p&gt;
+
+&lt;p&gt;因為用的機制不太一樣，所以會花點時間查裝置名稱&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;ip link show&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;最重要就是數字後面的名稱了，比如我這邊第一個是lo，第二個叫eth0，第三個是eth1。&lt;br /&gt;
+接著是link/ether的值請和你Virtualbox上的MAC照一樣，找出誰是誰。&lt;/p&gt;
+
+&lt;p&gt;最後我們去修改/etc/network/interfaces：
+#我這邊的話eth0是NAT而eth1是host-only
+auto eth0
+iface eth0 inet static
+  address 10.0.2.3
+  netmask 255.255.255.0
+  network 10.0.2.0
+  broadcast 10.0.2.255
+  gateway 10.0.2.1
+  dns-nameservers 168.95.1.1 8.8.8.8&lt;/p&gt;
+
+&lt;p&gt;auto eth1
+iface eth1 inet static
+  address 192.168.56.3
+  netmask 255.255.255.0
+  network 192.168.56.0
+  broadcast 192.168.56.255&lt;/p&gt;
+
+&lt;p&gt;重新啟動網卡也是使用ifdown和ifup。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;後記&lt;/h2&gt;
+&lt;p&gt;雖然說Kubuntu只要一個設定檔，但我覺得Fedora上nmcli手感比較好。&lt;/p&gt;
+
+&lt;p&gt;本篇沒提到的防火牆方面，firewalld的設定比起直接用iptable容易理解多了。&lt;br /&gt;
+除非你要限制本機對外的連線手段，不然firewalld的設定其實相當夠用。&lt;/p&gt;
+
+&lt;p&gt;使用systemctl開關服務或是檢視、追蹤服務的問題也比舊有的機制方便得多。&lt;br /&gt;
+當然啦，作為桌面版本，Ubuntu沒有迫切的需要改變，不過我覺得各個以伺服器為目標的Linux發行版是值得考慮引入這些工具的。&lt;/p&gt;
+</description>
+        <pubDate>Sun, 06 Sep 2015 00:00:00 +0800</pubDate>
+        <link>http://likwueron.github.io/linux-cli-networking/</link>
+        <guid isPermaLink="true">http://likwueron.github.io/linux-cli-networking/</guid>
+        
+        <category>Linux</category>
+        
+        <category>network</category>
+        
+        <category>cli</category>
+        
+        
+      </item>
     
       <item>
         <title>工作日誌：除蟲大賽</title>

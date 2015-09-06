@@ -5,11 +5,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>工作日誌：我們有的只是空空的畫面</title>
-  <meta name="description" content="雖然上次我表示可以弄些畫面(Screen)了，不過仔細想想，我們能做些什麼？什．麼．都．沒．有！">
+  <title>Linux文字介面下設定網卡</title>
+  <meta name="description" content="最近也是要考慮生活的問題了，畢竟這邊是不動漫世界，我也不能一直看動漫(炸)。我打算考個紅帽認證，感覺錢途比較好。">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://likwueron.github.io/work-all-we-have-is-just-empty-screen/">
+  <link rel="canonical" href="http://likwueron.github.io/linux-cli-networking/">
   <link rel="alternate" type="application/rss+xml" title="Likwueron的小屋" href="http://likwueron.github.io/feed.xml" />
 </head>
 
@@ -184,64 +184,126 @@
         </div>
         <div class="post">
   <header class="post-header">
-    <h1 class="post-title">工作日誌：我們有的只是空空的畫面</h1>
-    <p class="post-meta">Jul 8, 2015 • By Li, Kwue-Ron</p>
+    <h1 class="post-title">Linux文字介面下設定網卡</h1>
+    <p class="post-meta">Sep 6, 2015 • By Li, Kwue-Ron</p>
     
     <p class="post-meta">標籤：
       
-        <a href="/tag/qtlua">1. QtLua</a>，
+        <a href="/tag/linux">1. Linux</a>，
         
       
-        <a href="/tag/lua">2. lua</a>，
+        <a href="/tag/network">2. network</a>，
         
       
-        <a href="/tag/qt">3. Qt</a>，
-        
-      
-        <a href="/tag/working_log">4. working_log</a>
+        <a href="/tag/cli">3. cli</a>
       
     </p>
     
   </header>
   <article class="post-content">
-    <p>雖然上次我表示可以弄些畫面(Screen)了，不過仔細想想，我們能做些什麼？
-什．麼．都．沒．有！</p>
+    <p>最近也是要考慮生活的問題了，畢竟這邊是不動漫世界，我也不能一直看動漫(炸)。<br />
+我打算考個紅帽認證，感覺錢途比較好。</p>
 
-<p>接下來討論這些不同面象的畫面要怎麼做，現有的程式又缺了些什麼。</p>
+<p>老實說我覺得去補習班…很不值，因為請來的老師我不覺得很優秀。<br />
+我覺得網管應該是以文字介面的工具為主才對，GUI只是作為設定驗證之類的。<br />
+雖然往好的方面想，我以前摸Linux的時間沒有白費…</p>
 
-<h1 id="section">畫廊</h1>
-<p>很多RPG都有什麼回憶啦，怪物紀錄之類的東西。
-大致上來說，它們和遊戲的運作沒什麼關係，只是單純的讀取資料。</p>
+<p>該怎麼說，其實班上根本就是巨大落差，大概是「雲端」這個詞聽起來很潮就跑過來了。<br />
+嘛，我的想法和以前一樣，「雲端多數只是行銷名詞」，基本上和多東西和以前一樣。<br />
+當然，對於最前線的來說倒是很多東西都不太一樣了。</p>
 
-<p>想像一下你有一份文件，其中放了一堆1和0好用來表示哪些東西要顯示，哪些不用。
-Lua中有一個IO模組，我們是可以用它處理這件事，或是你覺得給它讀寫二進位檔的能力很可怕，也可以自己寫TextReader和TextWriter。
-反正讀寫本身沒有太多問題。</p>
+<h2 id="section">問題</h2>
+<p>網路設定在現在的發行版中幾乎都是自動抓取了，除非你是使用ADSL，它要走PPPOE。<br />
+不過現在虛擬化也有不少應用，加上教學時用VM也比較方便，所以在虛擬網上的處理就是這次的主題了。<br /></p>
 
-<p>接下來我要找相關的圖片並顯示，在Qt中，最簡單的是使用QLabel。
-但接下來你很悲痛的發現QLabel的setPixmap吃的是QPixmap，你還得先建立該物件…
-再來你又發現QPixmap少了一大堆你要的方法，對，很多Qt物件並沒有把成員函式設為slots。</p>
+<p>使用的軟體VirtualBox，雖然業界可能只信任VMWare，只是我用VB比較久了…<br />
+使用兩張介面卡：NAT network和Host-Only。
+兩邊都關閉DHCP。<br />
+至於為什麼要用NAT network而不是預設的NAT是因為它可以讓多個虛擬機在同一子網路，方便NAT轉送。</p>
 
-<p>不管怎麼看，這方面都是要再造一個物件補上去。
-而如果你還有別的需求，肯定是要碰C++的，那聽起來真令人不舒服。</p>
+<p>OS使用Dabian系下的Kubuntu 14.04和RedHat系下Fedora 22實作。<br />
+基本上來說，台灣的Linux以RedHat為主，用Fedora操作的確是比較順手…<br />
+不過這不代表說Ubuntu就不能用指令，只是很多RedHat採用的東西，比如firewalld, systemd和nmcli並沒有預裝或是完整支援。</p>
 
-<h1 id="section-1">設定</h1>
-<p>像設定這一類的是包含讀和寫，而且它不一定是讀檔，比如你在遊戲中更改的話就是對記憶體讀寫。</p>
+<h2 id="fedora">Fedora</h2>
+<p>一開始介面卡都很好的抓到了，老實說真的很順手。<br />
+如果要說哪邊有問題的話，應該是ip位址設定上要注意，設錯了要砍掉，不然會出現多個值。</p>
 
-<p>我有想過用動態屬性轉向。
-Qt中有一個叫QDynamicPropertyChangeEvent的事件，很明顯的會在動態屬性變化時發送。
-所以我們可以接到它之後轉給特定函式處理。
-不過如果我要增加新的設定選項呢？唉，還是不行，又要回頭加東西。</p>
+<h3 id="nat">設定NAT</h3>
+<p>NAT網路開頭似乎是enp</p>
 
-<p>RPG Maker是怎麼讓它有那麼大的彈性的？也許這和它很多東西都用RGSS做延伸。
-可惜我看到那一堆程式碼就覺得研究起來很麻煩，不然現在應該是在做它了。
-嘛，不管怎樣，最好的方法還是盡可能的把東西釋出到腳本環境，然後用腳本做延伸。</p>
+<p>VirtualBox的nat比較詭異的是，你指定的gateway只要是在同一子網路它都可以連得通。<br />
+比如我一台設10.0.2.1，另一台設10.0.2.2，也就是同一網路上有兩個gateway也行。</p>
 
-<p>目前對這點想得到應該是覆載函式這點。
-要覆載的話，目前也只有動態屬性可以動。
-想想看，我們把一個Lua函式指給動態屬性，而在paintEvent中判斷：如果有這個屬性，就執行它。
-而要達成這一步就非得要讓QMetaType認識QtLua::Value，這樣我們才能使用QVariant包裝它。</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">sudo nmcli connection edit <span class="o">[</span>介面卡]
+<span class="c">#應該會提示你method要不要改成manual</span>
+<span class="o">(</span>nmcli<span class="o">)</span>&gt;set ipv4.address 10.0.2.2/24
+<span class="o">(</span>nmcli<span class="o">)</span>&gt;set ipv4.gatway 10.0.2.1
+<span class="o">(</span>nmcli<span class="o">)</span>&gt;set ipv4.dns 168.95.1.1 8.8.8.8
+<span class="o">(</span>nmcli<span class="o">)</span>&gt;save
+<span class="o">(</span>nmcli<span class="o">)</span>&gt;quit</code></pre></div>
 
-<p>而剩下的，可能就要拿個RPG Maker的作品來研究一下。</p>
+<h3 id="host-only">設定 Host-Only</h3>
+<p>VirtualBox會在安裝後給你主端一張host-only的網卡，指定ip時紀得不要衝到了。<br />
+這邊比較容易出現ID是中文的情形，所以設定時要改用uuid<br />
+另外就是不要設gateway，不然會和NAT搶預設路由。</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">sudo nmcli connection edit uuid <span class="o">[</span>UUID]
+<span class="c">#把妨礙設定的中文改掉</span>
+<span class="o">(</span>nmcli<span class="o">)</span>&gt;set connection.id <span class="o">[</span>名稱]
+<span class="o">(</span>nmcli<span class="o">)</span>&gt;set ipv4.address 192.168.56.2
+<span class="o">(</span>nmcli<span class="o">)</span>&gt;save
+<span class="o">(</span>nmcli<span class="o">)</span>&gt;quit</code></pre></div>
+
+<h3 id="section-1">其它</h3>
+<p>因為是一次設定兩張，嫌麻煩的話可以把整個network服務重開</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">sudo systemctl restart network</code></pre></div>
+
+<p>當然，你也可以一張一張的處理</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">sudo ifdown <span class="o">[</span>介面卡id]
+sudo ifup <span class="o">[</span>介面卡id]</code></pre></div>
+
+<h2 id="kubuntu">Kubuntu</h2>
+<p>GUI預設的那支小工具…會罷工，所以把裡面的東西都砍掉，免得衝突。<br />
+重開機後MAC和介面卡的對映以及名稱可都會跑掉，所以要再確認。</p>
+
+<p>因為用的機制不太一樣，所以會花點時間查裝置名稱</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">ip link show</code></pre></div>
+
+<p>最重要就是數字後面的名稱了，比如我這邊第一個是lo，第二個叫eth0，第三個是eth1。<br />
+接著是link/ether的值請和你Virtualbox上的MAC照一樣，找出誰是誰。</p>
+
+<p>最後我們去修改/etc/network/interfaces：
+#我這邊的話eth0是NAT而eth1是host-only
+auto eth0
+iface eth0 inet static
+  address 10.0.2.3
+  netmask 255.255.255.0
+  network 10.0.2.0
+  broadcast 10.0.2.255
+  gateway 10.0.2.1
+  dns-nameservers 168.95.1.1 8.8.8.8</p>
+
+<p>auto eth1
+iface eth1 inet static
+  address 192.168.56.3
+  netmask 255.255.255.0
+  network 192.168.56.0
+  broadcast 192.168.56.255</p>
+
+<p>重新啟動網卡也是使用ifdown和ifup。</p>
+
+<h2 id="section-2">後記</h2>
+<p>雖然說Kubuntu只要一個設定檔，但我覺得Fedora上nmcli手感比較好。</p>
+
+<p>本篇沒提到的防火牆方面，firewalld的設定比起直接用iptable容易理解多了。<br />
+除非你要限制本機對外的連線手段，不然firewalld的設定其實相當夠用。</p>
+
+<p>使用systemctl開關服務或是檢視、追蹤服務的問題也比舊有的機制方便得多。<br />
+當然啦，作為桌面版本，Ubuntu沒有迫切的需要改變，不過我覺得各個以伺服器為目標的Linux發行版是值得考慮引入這些工具的。</p>
 
   </article>
 </div>
@@ -254,7 +316,7 @@ Qt中有一個叫QDynamicPropertyChangeEvent的事件，很明顯的會在動態
 </p>
     
     <center>
-      <a href="https://twitter.com/intent/tweet?url=http://likwueron.github.io/work-all-we-have-is-just-empty-screen/&text=工作日誌：我們有的只是空空的畫面&via=likwueron">
+      <a href="https://twitter.com/intent/tweet?url=http://likwueron.github.io/linux-cli-networking/&text=Linux文字介面下設定網卡&via=likwueron">
         <span class="icon  icon--twitter">
           <svg viewBox="0 0 16 16">
             <path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809
@@ -263,7 +325,7 @@ Qt中有一個叫QDynamicPropertyChangeEvent的事件，很明顯的會在動態
         </span>
         <span>推文</span>
       </a>|
-      <a href="https://plus.google.com/share?url=http://likwueron.github.io/work-all-we-have-is-just-empty-screen/">
+      <a href="https://plus.google.com/share?url=http://likwueron.github.io/linux-cli-networking/">
         <span>Google+一個</span>
       </a>|
       <a href="/feed.xml">訂閱</a>
