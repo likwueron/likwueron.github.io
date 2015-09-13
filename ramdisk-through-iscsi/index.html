@@ -5,11 +5,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Linux文字介面下設定網卡</title>
-  <meta name="description" content="最近也是要考慮生活的問題了，畢竟這邊是不動漫世界，我也不能一直看動漫(炸)。我打算考個紅帽認證，感覺錢途比較好。">
+  <title>本來想用Linux的Target建Ramdisk的</title>
+  <meta name="description" content="用Target建立磁碟分享感覺比Samba分享資料夾酷多了，為什麼不呢？不過我不建議用ramdisk就是了，實測速度很低。可能是用虛擬機建的會有這問題。">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://likwueron.github.io/linux-cli-networking/">
+  <link rel="canonical" href="http://likwueron.github.io/ramdisk-through-iscsi/">
   <link rel="alternate" type="application/rss+xml" title="Likwueron的小屋" href="http://likwueron.github.io/feed.xml" />
 </head>
 
@@ -197,126 +197,92 @@
         </div>
         <div class="post">
   <header class="post-header">
-    <h1 class="post-title">Linux文字介面下設定網卡</h1>
-    <p class="post-meta">Sep 6, 2015 • By Li, Kwue-Ron</p>
+    <h1 class="post-title">本來想用Linux的Target建Ramdisk的</h1>
+    <p class="post-meta">Sep 13, 2015 • By Li, Kwue-Ron</p>
     
     <p class="post-meta">標籤：
       
-        <a href="/tag/linux">1. Linux</a>，
+        <a href="/tag/linux">1. linux</a>，
         
       
-        <a href="/tag/network">2. network</a>，
+        <a href="/tag/centos">2. centos</a>，
         
       
-        <a href="/tag/cli">3. cli</a>
+        <a href="/tag/target">3. target</a>
       
     </p>
     
   </header>
   <article class="post-content">
-    <p>最近也是要考慮生活的問題了，畢竟這邊是不動漫世界，我也不能一直看動漫(炸)。<br />
-我打算考個紅帽認證，感覺錢途比較好。</p>
+    <p>用Target建立磁碟分享感覺比Samba分享資料夾酷多了，為什麼不呢？<br />
+不過我不建議用ramdisk就是了，實測速度很低。可能是用虛擬機建的會有這問題。</p>
 
-<p>老實說我覺得去補習班…很不值，因為請來的老師我不覺得很優秀。<br />
-我覺得網管應該是以文字介面的工具為主才對，GUI只是作為設定驗證之類的。<br />
-雖然往好的方面想，我以前摸Linux的時間沒有白費…</p>
+<p>Centos上提供一個方便的targetcli好讓你建立iscsi，我真的很喜歡互動式介面。<br />
+不過這東西有時也挺令人困惑的，因為它使用目錄式的結構，有時會和原本系統上的目錄結構搞混。</p>
 
-<p>該怎麼說，其實班上根本就是巨大落差，大概是「雲端」這個詞聽起來很潮就跑過來了。<br />
-嘛，我的想法和以前一樣，「雲端多數只是行銷名詞」，基本上和多東西和以前一樣。<br />
-當然，對於最前線的來說倒是很多東西都不太一樣了。</p>
+<h2 id="backstores">backstores</h2>
 
-<h2 id="section">問題</h2>
-<p>網路設定在現在的發行版中幾乎都是自動抓取了，除非你是使用ADSL，它要走PPPOE。<br />
-不過現在虛擬化也有不少應用，加上教學時用VM也比較方便，所以在虛擬網上的處理就是這次的主題了。<br /></p>
+<p>首先我們要建立儲存設備(希望我用詞不要錯太多)，在backstores下有block, fileio, pscsi, ramdisk。<br />
+* block - 磁碟裝置，比如/dev/sda1
+* fileio - 檔案，大小是根據目前檔案佔用的大小
+* pscsi - 可能是實體scsi裝置，只是我沒這類硬體，所以不會用
+* ramdisk - 今天的主角</p>
 
-<p>使用的軟體VirtualBox，雖然業界可能只信任VMWare，只是我用VB比較久了…<br />
-使用兩張介面卡：NAT network和Host-Only。
-兩邊都關閉DHCP。<br />
-至於為什麼要用NAT network而不是預設的NAT是因為它可以讓多個虛擬機在同一子網路，方便NAT轉送。</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">sudo systemctl start target
+sudo targetcli
+&gt;cd backstores/ramdisk
+&gt;create ramdisk1 <span class="nv">size</span><span class="o">=</span>2G</code></pre></div>
 
-<p>OS使用Dabian系下的Kubuntu 14.04和RedHat系下Fedora 22實作。<br />
-基本上來說，台灣的Linux以RedHat為主，用Fedora操作的確是比較順手…<br />
-不過這不代表說Ubuntu就不能用指令，只是很多RedHat採用的東西，比如firewalld, systemd和nmcli並沒有預裝或是完整支援。</p>
+<h2 id="lun">LUN</h2>
 
-<h2 id="fedora">Fedora</h2>
-<p>一開始介面卡都很好的抓到了，老實說真的很順手。<br />
-如果要說哪邊有問題的話，應該是ip位址設定上要注意，設錯了要砍掉，不然會出現多個值。</p>
+<p>接下來，我們要建立iscsi設備，而iscsi設備都要透過LUN連結先前建立的儲存設備。<br />
+喔，對了，iscsi要指定一個名稱，而這個名稱要有規範，網路上都用iqn這套，所以我也是。<br />
+大概長這樣：iqn.YYYY-MM.[反向.域名.如.tw.idv.kwueron][:爽就好]<br />
+比如我用這個：iqn.2015-09.tw.idv.kwueron:svr.disk</p>
 
-<h3 id="nat">設定NAT</h3>
-<p>NAT網路開頭似乎是enp</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">&gt;cd /iscsi
+&gt;create iqn.2015-09.tw.idv.kwueron:svr.disk
+&gt;cd tpg1/luns
+&gt;create /backstores/ramdisk/ramdisk1</code></pre></div>
 
-<p>VirtualBox的nat比較詭異的是，你指定的gateway只要是在同一子網路它都可以連得通。<br />
-比如我一台設10.0.2.1，另一台設10.0.2.2，也就是同一網路上有兩個gateway也行。</p>
+<h2 id="acls">ACLs</h2>
+<p>雖然有些教學會去改監聽的埠，不過我覺得預設的全部都聽並沒有太多問題，嘛，因為我這邊區網啦。</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">sudo nmcli connection edit <span class="o">[</span>介面卡]
-<span class="c">#應該會提示你method要不要改成manual</span>
-<span class="o">(</span>nmcli<span class="o">)</span>&gt;set ipv4.address 10.0.2.2/24
-<span class="o">(</span>nmcli<span class="o">)</span>&gt;set ipv4.gatway 10.0.2.1
-<span class="o">(</span>nmcli<span class="o">)</span>&gt;set ipv4.dns 168.95.1.1 8.8.8.8
-<span class="o">(</span>nmcli<span class="o">)</span>&gt;save
-<span class="o">(</span>nmcli<span class="o">)</span>&gt;quit</code></pre></div>
+<p>重點在於認證的設定，Windows那邊如果你要設定認證，密碼限定在12-16個字母。<br />
+而targetcli這邊密碼不能用特殊符號，總而言之要弄密碼不太容易<s>，也許該改埠？</s></p>
 
-<h3 id="host-only">設定 Host-Only</h3>
-<p>VirtualBox會在安裝後給你主端一張host-only的網卡，指定ip時紀得不要衝到了。<br />
-這邊比較容易出現ID是中文的情形，所以設定時要改用uuid<br />
-另外就是不要設gateway，不然會和NAT搶預設路由。</p>
+<p>而在使用者名稱這邊，Windows 7預設是iqn.1991-05.com.microsoft:[你的電腦名稱，如：大明的電腦]<br />
+不過是不是真的吃中文我就不知道了，嘛，反正Windows那邊可以改啦。</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">sudo nmcli connection edit uuid <span class="o">[</span>UUID]
-<span class="c">#把妨礙設定的中文改掉</span>
-<span class="o">(</span>nmcli<span class="o">)</span>&gt;set connection.id <span class="o">[</span>名稱]
-<span class="o">(</span>nmcli<span class="o">)</span>&gt;set ipv4.address 192.168.56.2
-<span class="o">(</span>nmcli<span class="o">)</span>&gt;save
-<span class="o">(</span>nmcli<span class="o">)</span>&gt;quit</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">&gt;cd /iscsi/iqn.2015-09.tw.idv.kwueron:svr.disk/tpg1/acls
+&gt;create iqn.1991-05.com.microsoft:kwueron-pc
+&gt;cd iqn.1991-05.com.microsoft:kwueron-pc
+&gt;set auth <span class="nv">userid</span><span class="o">=</span>iqn.1991-05.com.microsoft:kwueron-pc
+&gt;set auth <span class="nv">passwd</span><span class="o">=</span>passwdistoolong</code></pre></div>
 
-<h3 id="section-1">其它</h3>
-<p>因為是一次設定兩張，嫌麻煩的話可以把整個network服務重開</p>
+<h2 id="section">雜項</h2>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">sudo systemctl restart network</code></pre></div>
+<p>如果你要儲存的話用saveconfig，離開是exit。<br />
+saveconfig指定的檔名會用系統的目錄，所以建議用絕對路徑。</p>
 
-<p>當然，你也可以一張一張的處理</p>
+<p>我忘了防火牆？你應該知道吧？埠是3260，自己加。</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">sudo ifdown <span class="o">[</span>介面卡id]
-sudo ifup <span class="o">[</span>介面卡id]</code></pre></div>
+<h2 id="section-1">連線</h2>
+<p>首先在控制台那邊找iscsi。<br />
+這支程式第一執行會要求開啟服務，所以你要點兩次。
+<img src="http://i.imgur.com/eQzekNj.png" alt="Imgur" /></p>
 
-<h2 id="kubuntu">Kubuntu</h2>
-<p>GUI預設的那支小工具…會罷工，所以把裡面的東西都砍掉，免得衝突。<br />
-重開機後MAC和介面卡的對映以及名稱可都會跑掉，所以要再確認。</p>
+<p>接著我們要探索目標：<strong><em>探索=&gt;探索入口=&gt;輸入該死的ip</em></strong>
+<img src="http://i.imgur.com/UCud7vc.png" alt="Imgur" /></p>
 
-<p>因為用的機制不太一樣，所以會花點時間查裝置名稱</p>
+<p>然後我們去抓目標，你應該會看到，比如我的iqn.2015-09.tw.idv.kwueron:svr.disk
+不過因為我們設定認證，所以還不要急著確定。
+<strong><em>目標=&gt;iscsi裝置=&gt;連線=&gt;進階</em></strong>
+<img src="http://i.imgur.com/hn3K22v.png" alt="Imgur" /></p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">ip link show</code></pre></div>
-
-<p>最重要就是數字後面的名稱了，比如我這邊第一個是lo，第二個叫eth0，第三個是eth1。<br />
-接著是link/ether的值請和你Virtualbox上的MAC照一樣，找出誰是誰。</p>
-
-<p>最後我們去修改/etc/network/interfaces：
-#我這邊的話eth0是NAT而eth1是host-only
-auto eth0
-iface eth0 inet static
-  address 10.0.2.3
-  netmask 255.255.255.0
-  network 10.0.2.0
-  broadcast 10.0.2.255
-  gateway 10.0.2.1
-  dns-nameservers 168.95.1.1 8.8.8.8</p>
-
-<p>auto eth1
-iface eth1 inet static
-  address 192.168.56.3
-  netmask 255.255.255.0
-  network 192.168.56.0
-  broadcast 192.168.56.255</p>
-
-<p>重新啟動網卡也是使用ifdown和ifup。</p>
-
-<h2 id="section-2">後記</h2>
-<p>雖然說Kubuntu只要一個設定檔，但我覺得Fedora上nmcli手感比較好。</p>
-
-<p>本篇沒提到的防火牆方面，firewalld的設定比起直接用iptable容易理解多了。<br />
-除非你要限制本機對外的連線手段，不然firewalld的設定其實相當夠用。</p>
-
-<p>使用systemctl開關服務或是檢視、追蹤服務的問題也比舊有的機制方便得多。<br />
-當然啦，作為桌面版本，Ubuntu沒有迫切的需要改變，不過我覺得各個以伺服器為目標的Linux發行版是值得考慮引入這些工具的。</p>
+<p>因為我們先前已經把名稱設定好了，所以啟用CHAP後打密碼就好。<br />
+不過，如果你的電腦名稱真的用中文的話，也許會出現別的東西。
+<img src="http://i.imgur.com/0yWT53Q.png" alt="Imgur" /></p>
 
   </article>
 </div>
@@ -329,7 +295,7 @@ iface eth1 inet static
 </p>
     
     <center>
-      <a href="https://twitter.com/intent/tweet?url=http://likwueron.github.io/linux-cli-networking/&text=Linux文字介面下設定網卡&via=likwueron">
+      <a href="https://twitter.com/intent/tweet?url=http://likwueron.github.io/ramdisk-through-iscsi/&text=本來想用Linux的Target建Ramdisk的&via=likwueron">
         <span class="icon  icon--twitter">
           <svg viewBox="0 0 16 16">
             <path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809
@@ -338,7 +304,7 @@ iface eth1 inet static
         </span>
         <span>推文</span>
       </a>|
-      <a href="https://plus.google.com/share?url=http://likwueron.github.io/linux-cli-networking/">
+      <a href="https://plus.google.com/share?url=http://likwueron.github.io/ramdisk-through-iscsi/">
         <span>Google+一個</span>
       </a>|
       <a href="/feed.xml">訂閱</a>
