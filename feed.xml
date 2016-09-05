@@ -6,9 +6,65 @@
 </description>
     <link>http://likwueron.github.io/</link>
     <atom:link href="http://likwueron.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 13 Sep 2015 23:59:49 +0800</pubDate>
-    <lastBuildDate>Sun, 13 Sep 2015 23:59:49 +0800</lastBuildDate>
+    <pubDate>Mon, 05 Sep 2016 23:42:26 +0800</pubDate>
+    <lastBuildDate>Mon, 05 Sep 2016 23:42:26 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>對Text Service Framework的碎碎念</title>
+        <description>&lt;p&gt;好久都沒用這套系統…生灰了。
+這次，想說練一練生疏的C++，不過顯然選錯對象，不知道能撐多久。
+嘛，反正我很喜歡靠盃別人，就看看能不能用對微軟怨念搞完這專案吧。&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;緣起(？)&lt;/h2&gt;
+
+&lt;p&gt;Text Service Framework，就資料來看是微軟在XP時期就引入的東西。
+但它真正成為預設的輸入法管理框架是從Vista開始。
+而到了Win10的時候，你會發現某些客制輸入法沒辦法在開始功能表使用，這代表新一代的程式不再接受舊的框架。
+當然，這是指那些使用微軟最新最炫炮的程式設計方式來講，但商業程式都有自己的包袱在，所以這一兩年應該也還好。
+但之後嘛，誰知道？&lt;/p&gt;
+
+&lt;p&gt;更何況對現在的我來說實在是受不了，我可以一天不上哈哈姆特，但不能一天不打字。
+但這個gcin，以日常使用來說手感還不是很好，除了不能在新程式上打字外，在某些極端的情形下也會當掉。
+沒有什麼理由等作者放出TSF版。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;目前看到的&lt;/h2&gt;
+&lt;p&gt;微軟在Vista時代時釋出範例程式和教學文件，但目前只剩範例還在，教學的連結全掛了。
+所以我不得不從其中的散裝的Reference和範例碼來學習。
+哦，我為什麼不查一下英文？嗯，我早就查了。
+很明顯的，因為除了CJK之外沒什麼語言需要用到那麼複雜的功能，沒需求的話何必去寫相關的程式？
+日本人也許會吧？但我日文比C++還差，算了吧。&lt;/p&gt;
+
+&lt;p&gt;反正，範例程式用regsvr32註冊後會發現多出來的是中國(簡體)。
+然後你打什麼就丟什麼出來，除了可以讓你切換全形半形、標點符號外什麼都沒實作。&lt;/p&gt;
+
+&lt;p&gt;唉，算了，反正再怎樣範例也不會全給你a1到a10的鳥命名方式吧？除了很蠢的在類別前加C。
+Register.cpp？所以你要註冊什麼？
+啊，看來這邊是在處理一些安裝的東西&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span class=&quot;n&quot;&gt;pITfInputProcessorProfileMgr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;UnregisterProfile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Global&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SampleIMECLSID&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TEXTSERVICE_LANGID&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Global&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SampleIMEGuidProfile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;參數找一找，發現到TEXTSERVICE_LANGID正是定義了這個輸入法會放在哪一個語言底下。
+把它改成繁中，野！現在它是繁中輸入法了(被巴)。&lt;/p&gt;
+
+&lt;h2 id=&quot;ps&quot;&gt;P.S.&lt;/h2&gt;
+
+&lt;p&gt;不曉得為什麼，現在就連範例碼的連結都有點問題。省點麻煩，我這邊&lt;a href=&quot;https://mega.nz/#!B0oR2YwY!WG45JLqFKbB5cUplwT_-ogpR1m_3uolqydcIhXNsmgs&quot;&gt;上傳到mega&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;話說，這東西簡稱TSF，我好像在哪看過？&lt;/p&gt;
+</description>
+        <pubDate>Mon, 05 Sep 2016 00:00:00 +0800</pubDate>
+        <link>http://likwueron.github.io/murmur-on-text-service-framework/</link>
+        <guid isPermaLink="true">http://likwueron.github.io/murmur-on-text-service-framework/</guid>
+        
+        <category>windows_10</category>
+        
+        <category>text_service_framework</category>
+        
+        <category>tsf</category>
+        
+        
+      </item>
     
       <item>
         <title>本來想用Linux的Target建Ramdisk的</title>
@@ -764,31 +820,6 @@ QtLua不算是因為它比較像是腳本引擎。用來寫程式我覺得lqt會
         <category>Qt</category>
         
         <category>Widget</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>測試文章</title>
-        <description>&lt;p&gt;看了看，Github居然可以架個人網頁說。
-好吧，那就試一試吧，反正用別的東西還要搞來搞去，而且我要弄的是程式的。
-有什麼比官方推薦的東西更好的？&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;iosteam&amp;gt;
-&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cout&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Hello Github&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;endl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;不過，因為Qt有很多自己的新增的東西，所以有時會有點小失敗就是了。&lt;br /&gt;
-嘛，算了，管它的。&lt;/p&gt;
-</description>
-        <pubDate>Sun, 28 Jun 2015 00:00:00 +0800</pubDate>
-        <link>http://likwueron.github.io/first-post-always-as-test/</link>
-        <guid isPermaLink="true">http://likwueron.github.io/first-post-always-as-test/</guid>
-        
-        <category>murmur</category>
         
         
       </item>
