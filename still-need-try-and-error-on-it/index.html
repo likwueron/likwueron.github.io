@@ -5,11 +5,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>工作日誌：除蟲大賽</title>
-  <meta name="description" content="問題修正">
+  <title>所以還是要硬來才能搞清楚一些東西</title>
+  <meta name="description" content="反正就是…看了一長串程式碼，自以為功力夠了可以看完，結過怠惰六天多。">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://likwueron.github.io/release-debuging-task/">
+  <link rel="canonical" href="http://likwueron.github.io/still-need-try-and-error-on-it/">
   <link rel="alternate" type="application/rss+xml" title="Likwueron的小屋" href="http://likwueron.github.io/feed.xml" />
 </head>
 
@@ -219,51 +219,39 @@
         </div>
         <div class="post">
   <header class="post-header">
-    <h1 class="post-title">工作日誌：除蟲大賽</h1>
-    <p class="post-meta">Jul 20, 2015 • By Li, Kwue-Ron</p>
+    <h1 class="post-title">所以還是要硬來才能搞清楚一些東西</h1>
+    <p class="post-meta">Sep 12, 2016 • By Li, Kwue-Ron</p>
     <p class="post-meta">標籤：
-        <a href="/tag/qamer">1. Qamer</a>，
-        <a href="/tag/qtlua">2. QtLua</a>，
-        <a href="/tag/lua">3. lua</a>，
-        <a href="/tag/memory_allocation">4. memory_allocation</a>，
-        <a href="/tag/debug">5. debug</a>，
-        <a href="/tag/working_release">6. working_release</a>
+        <a href="/tag/text_service_framework">1. text_service_framework</a>，
+        <a href="/tag/tsf">2. tsf</a>
     </p>
   </header>
   <article class="post-content">
-    <h2 id="section">問題修正</h2>
+    <p>反正就是…看了一長串程式碼，自以為功力夠了可以看完，結過怠惰六天多。</p>
 
-<p>今天總算是找到蟲在哪邊了，其實我之前就有寫註解，但那時就是不了解問題在哪。</p>
+<h2 id="section">語言列按鈕</h2>
+<p>怎麼說呢？這支範例其實提供三個按鈕，剩下那個不曉得跑哪去的就是常見的「中文/英數切換」。
+至於它為什麼不見，我也不曉得，明明程式中有設定的，而且也沒有各別隱藏的函式的樣子。(find reference沒有找到分別處理的跡象)
+反正，為什麼看不到目前是一個很神祕的事情，寶傑，你怎麼說？</p>
 
-<p>要怎麼說，就是有點丟臉啊…因為眼花沒注意自己打成另一個變數，結果某一個指標重複被釋放。<br />
-至於為什麼這會變成機率性當掉，我想可能是delete運算子有「防呆」設計。<br />
-在防呆運作正常的時候它能防止重複釋放的問題，但顯然因為我寫的太複雜了，它有時無法理解那兩次delete都是同一個指標，所以會當掉。</p>
+<h2 id="section-1">誰在輸出文字</h2>
+<p>第一步是找實作 ITfEditSession.DoEditSession 的地方，為什麼會知道？因為網路上有個人想辦法寫了一個<a href="http://input.foruto.com/IME/Windows/IME_PROGRAMMING/TSF/index.html">範例</a>，不管你按了什麼都只會講hello world，我去找那一段字就找到了。
+不過這樣的範例還是被Win10辨認成舊的api(後面加註一個僅桌面的鳥字)，我也搞不懂為什麼。</p>
 
-<p>前一次釋出時太急了沒有注意測試到一些東西，比如說lua5.1.dll沒包進去，以及畫面切換後切不回去都在這次修正了。</p>
+<p>首先是輸出一般文字的部份由CSampleIME._SetInputString處理，很有趣的是這函式是寫在Composition.cpp，看起來這是種功能分組而不是只單看名子而已，可以考慮以後這樣寫。</p>
 
-<h2 id="section-1">新增功能</h2>
+<div class="highlight"><pre><code class="language-cpp" data-lang="cpp"><span class="n">pRange</span><span class="o">-&gt;</span><span class="n">SetText</span><span class="p">(</span><span class="n">ec</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">pstrAddString</span><span class="o">-&gt;</span><span class="n">Get</span><span class="p">(),</span> <span class="p">(</span><span class="n">LONG</span><span class="p">)</span><span class="n">pstrAddString</span><span class="o">-&gt;</span><span class="n">GetLength</span><span class="p">());</span></code></pre></div>
 
-<p>然後這次主要在腳本中增加Label這個「類別」，基本上就是在QLabel外面套一層，好讓你可以設定圖片。<br />
-雖然我也在網路上看有人是用函式處理這問題，不過我覺得用類似物件導向的語法會感覺比較良好。</p>
+<p>另一個是同一個檔案內的CSampleIME._AddCharAndFinalize，它處理的是結尾標點。</p>
 
-<p>加入了resolvePostorder(ParaList, GameObject)<br />
-在之前我一直是用getDamage來取傷害的，只是我越來越覺得這不夠彈性，最後就加入這東西了。不過具體而言，它是一個使用上比較「神秘」的函式。<br />
-ParaList就是QList<parameter>，而Parameter則是我自己寫的一個字元陣列。C++端的實作暫且不論，在腳本這邊它會以數字表格(table)的形式存在。<br />
-會這麼做的原因還是在於Parameter第一個元素是存儲「目前長度」，並允許各元素使用0作為值。如果我用字串的形式丟到腳本環境，回到C++端可能就無法還原了。<br />
-Parameter亦能作為有限長度的整數陣列，這算是很大的利用C語言低階的特性。</parameter></p>
+<div class="highlight"><pre><code class="language-cpp" data-lang="cpp"><span class="n">tfSelection</span><span class="p">.</span><span class="n">range</span><span class="o">-&gt;</span><span class="n">SetText</span><span class="p">(</span><span class="n">ec</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">pstrAddString</span><span class="o">-&gt;</span><span class="n">Get</span><span class="p">(),</span> <span class="p">(</span><span class="n">LONG</span><span class="p">)</span><span class="n">pstrAddString</span><span class="o">-&gt;</span><span class="n">GetLength</span><span class="p">());</span></code></pre></div>
 
-<p>話說回來，當初會加這個也算是一種奇怪的堅持就是了。<br />
-最初我很希望用後序來存儲傷害運算式，所以你在data/script/skill.cfg.qs寫的那些setParameter(Qamer.ParaDamage, “stregth+5”);會被轉成stregth 5 +</p>
+<p>第一個參數是editcookie，嗯？實際上是32bit無號整數，我認為會是流水編號之類的。<br />
+第二個是dword，不過我比較喜歡叫「32bit無號整數」，變數的名子也會取作flag32。對，這是旗子。<br />
+剩下兩個很明顯了，字串本身和字串長度。</p>
 
-<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="c1">-- 這個技能是近戰的「劍擊」</span>
-<span class="n">skill</span> <span class="o">=</span> <span class="n">qt</span><span class="p">.</span><span class="n">meta</span><span class="p">.</span><span class="n">GameObject</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-<span class="n">para</span> <span class="o">=</span> <span class="n">skill</span><span class="p">:</span><span class="n">parameter</span><span class="p">(</span><span class="n">qt</span><span class="p">.</span><span class="n">meta</span><span class="p">.</span><span class="n">Qamer</span><span class="p">.</span><span class="n">ParaDamage</span><span class="p">);</span>
-<span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="k">in</span> <span class="nb">ipairs</span><span class="p">(</span><span class="n">para</span><span class="p">)</span> <span class="k">do</span> <span class="n">list</span><span class="p">(</span><span class="n">v</span><span class="p">);</span> <span class="k">end</span></code></pre></div>
-
-<p><img src="http://i.imgur.com/EtD8B9k.png" alt="Imgur" />
-<br />第一個是stregth，用了7個字元。第二個是數字5，-4代表內容是整數陣列，佔用4-byte。最後是+，用了1個字元。</p>
-
-<p><a href="https://mega.nz/#!F9YHUZRI!DIkeT4f2BLvOAwrHxFXV6FIzqPwFM4s8YcJOS_CwBkk">下載</a></p>
+<p>不過觸發條件仍要研究一下，雖然多數輸入法都只吃三排按鈕，不過像「大易」就吃四排，怎樣讓程式也把數字當作要轉換的輸入是重點之一。
+另外，結尾這部份只吃全形符號(還有全形的英數)，這對我來說不太合口味，也是要找一下。</p>
 
   </article>
 </div>
@@ -276,7 +264,7 @@ Parameter亦能作為有限長度的整數陣列，這算是很大的利用C語�
 </p>
     
     <center>
-      <a href="https://twitter.com/intent/tweet?url=http://likwueron.github.io/release-debuging-task/&text=工作日誌：除蟲大賽&via=likwueron">
+      <a href="https://twitter.com/intent/tweet?url=http://likwueron.github.io/still-need-try-and-error-on-it/&text=所以還是要硬來才能搞清楚一些東西&via=likwueron">
         <span class="icon  icon--twitter">
           <svg viewBox="0 0 16 16">
             <path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809
@@ -285,7 +273,7 @@ Parameter亦能作為有限長度的整數陣列，這算是很大的利用C語�
         </span>
         <span>推文</span>
       </a>|
-      <a href="https://plus.google.com/share?url=http://likwueron.github.io/release-debuging-task/">
+      <a href="https://plus.google.com/share?url=http://likwueron.github.io/still-need-try-and-error-on-it/">
         <span>Google+一個</span>
       </a>|
       <a href="/feed.xml">訂閱</a>
